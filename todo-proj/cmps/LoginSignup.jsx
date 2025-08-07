@@ -1,9 +1,10 @@
 import { showErrorMsg, showSuccessMsg } from '../services/event-bus.service.js'
 import { userService } from '../services/user.service.js'
+import { login, signup } from '../store/actions/user.actions.js'
 
 const { useState } = React
 
-export function LoginSignup({ onSetUser }) {
+export function LoginSignup() {
 
     const [isSignup, setIsSignUp] = useState(false)
     const [credentials, setCredentials] = useState(userService.getEmptyCredentials())
@@ -18,21 +19,19 @@ export function LoginSignup({ onSetUser }) {
         onLogin(credentials)
     }
 
-
     function onLogin(credentials) {
-        isSignup ? signup(credentials) : login(credentials)
+        isSignup ? _signup(credentials) : _login(credentials)
     }
 
-    function login(credentials) {
-        userService.login(credentials)
-            .then(onSetUser)
+    function _login(credentials) {
+        login(credentials)
             .then(() => { showSuccessMsg('Logged in successfully') })
             .catch((err) => { showErrorMsg('Oops try again') })
     }
 
-    function signup(credentials) {
-        userService.signup(credentials)
-            .then(onSetUser)
+    function _signup(credentials) {
+        signup(credentials)
+            // .then(onSetUser)
             .then(() => { showSuccessMsg('Signed in successfully') })
             .catch((err) => { showErrorMsg('Oops try again') })
     }
@@ -71,10 +70,7 @@ export function LoginSignup({ onSetUser }) {
 
             <div className="btns">
                 <a href="#" onClick={() => setIsSignUp(!isSignup)}>
-                    {isSignup ?
-                        'Already a member? Login' :
-                        'New user? Signup here'
-                    }
+                    {isSignup ?'Already a member? Login' :'New user? Signup here'}
                 </a >
             </div>
         </div >

@@ -14,3 +14,7 @@
 .todo-preview img {
     max-width: 100px;
 }
+
+.green{
+    background-color: rgb(57, 235, 57);
+}

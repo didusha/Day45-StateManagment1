@@ -52,7 +52,6 @@ function save(todo) {
         return storageService.put(TODO_KEY, todo)
     } else {
         todo.createdAt = todo.updatedAt = Date.now()
-
         return storageService.post(TODO_KEY, todo)
     }
 }
@@ -92,7 +91,7 @@ function _createTodos() {
         const txts = ['Learn React', 'Master CSS', 'Practice Redux']
         for (let i = 0; i < 20; i++) {
             const txt = txts[utilService.getRandomIntInclusive(0, txts.length - 1)]
-            todos.push(_createTodo(txt + (i + 1), utilService.getRandomIntInclusive(1, 10)))
+            todos.unshift(_createTodo(txt + (i + 1), utilService.getRandomIntInclusive(1, 10)))
         }
         utilService.saveToStorage(TODO_KEY, todos)
     }

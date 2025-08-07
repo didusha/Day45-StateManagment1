@@ -18,10 +18,9 @@
 	"Redux useSelector & useDispatch": {
 		"prefix": "redux",
 		"body": [
-			"import { useSelector, useDispatch } from 'react-redux'",
-			"",
+			"const { useSelector, useDispatch } = ReactRedux",
 			"const dispatch = useDispatch()",
-			"const ${1:todos} = useSelector(state => state.${1:todos})"
+			// "const ${1:todos} = useSelector(state => state.${1:todos})"
 		],
 		"description": "Import and use useSelector/useDispatch from React Redux"
 	}

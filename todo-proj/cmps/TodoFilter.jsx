@@ -1,8 +1,8 @@
 const { useState, useEffect } = React
 
-export function TodoFilter({ filterBy, onSetFilterBy }) {
+export function TodoFilter({ onSetFilterBy, defaultFilter }) {
 
-    const [filterByToEdit, setFilterByToEdit] = useState({...filterBy})
+    const [filterByToEdit, setFilterByToEdit] = useState(defaultFilter)
 
     useEffect(() => {
         // Notify parent
@@ -32,7 +32,7 @@ export function TodoFilter({ filterBy, onSetFilterBy }) {
     // Optional support for LAZY Filtering with a button
     function onSubmitFilter(ev) {
         ev.preventDefault()
-        onSetFilterBy(filterByToEdit)
+        // onSetFilterBy(filterByToEdit)
     }
 
     const { txt, importance } = filterByToEdit

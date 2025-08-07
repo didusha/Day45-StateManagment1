@@ -10,6 +10,8 @@ export const UPDATE_TODO = 'UPDATE_TODO'
 export const SET_USER = 'SET_USER'
 export const SET_USER_SCORE = 'SET_USER_SCORE'
 
+export const SET_FILTERBY = 'SET_FILTERBY'
+export const SET_LOADING = 'SET_LOADING'
 // export const TOGGLE_CART = 'TOGGLE_CART'
 // export const ADD_TO_CART = 'ADD_TO_CART'
 // export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
@@ -18,15 +20,17 @@ export const SET_USER_SCORE = 'SET_USER_SCORE'
 const initialState = {
 	todos: [],
 	loggedinUser: null,
+	filterBy: {
+		txt: '',
+		importance: 0,
+	},
+	isLoading: false,
 	// showCart: false,
 	// cart: [],
 }
 
 export function appReducer(state = initialState, cmd = {}) {
 	switch (cmd.type) {
-
-		// case INCREMENT_BY:
-		// 	return { ...state, count: state.count + cmd.diff }
 
 		case SET_TODOS:
 			return { ...state, todos: cmd.todos }
@@ -48,6 +52,13 @@ export function appReducer(state = initialState, cmd = {}) {
 		case SET_USER_SCORE:
 			const loggedinUser = { ...state.loggedinUser, score: cmd.score }
 			return { ...state, loggedinUser }
+
+		case SET_FILTERBY:
+			const filterBy = { ...state.filterBy, ...cmd.filterBy }
+			return { ...state, filterBy }
+
+		case SET_LOADING:
+			return { ...state, isLoading: cmd.isLoading }
 
 		// case TOGGLE_CART:
 		// 	return { ...state, showCart: !state.showCart }
