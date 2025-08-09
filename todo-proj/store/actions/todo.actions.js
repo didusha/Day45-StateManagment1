@@ -5,7 +5,11 @@ import { todoService } from '../../services/todo.service.js'
 export function loadTodos(filterBy = {}) {
         store.dispatch({ type: SET_LOADING, isLoading: true })
         return todoService.query(filterBy)
-                .then(todos => store.dispatch({ type: SET_TODOS, todos }))
+                .then(res => {
+                        const {maxPage, todos} = res
+                        store.dispatch({ type: SET_TODOS,todos  })
+                        return maxPage
+                })
                 .finally(() => store.dispatch({ type: SET_LOADING, isLoading: false }))
 }
 

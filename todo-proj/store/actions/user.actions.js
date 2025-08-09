@@ -23,3 +23,8 @@ export function checkout(amount) {
             store.dispatch({ type: SET_USER_SCORE, score })
         })
 }
+
+export function save(user) {
+	return userService.save(user)
+        .then(loggedinUser => store.dispatch({ type: SET_USER, loggedinUser }))
+}

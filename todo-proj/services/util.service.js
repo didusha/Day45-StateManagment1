@@ -4,7 +4,19 @@ export const utilService = {
     getRandomIntInclusive,
     loadFromStorage,
     saveToStorage,
-    animateCSS
+    animateCSS,
+    formatTimeAgo,
+    debounce
+}
+
+function debounce(callback, wait) {
+    let timeoutId = null;
+    return (...args) => {
+        window.clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(() => {
+            callback(...args);
+        }, wait);
+    };
 }
 
 function makeId(length = 6) {
@@ -57,4 +69,33 @@ function animateCSS(el, animation='bounce') {
 
         el.addEventListener('animationend', handleAnimationEnd, { once: true })
     })
+}
+
+function formatTimeAgo(timestamp) {
+  const now = Date.now()
+  const diffMs = now - timestamp
+  const diffSec = Math.floor(diffMs / 1000)
+  const diffMin = Math.floor(diffSec / 60)
+  const diffHour = Math.floor(diffMin / 60)
+  const diffDay = Math.floor(diffHour / 24)
+  const diffWeek = Math.floor(diffDay / 7)
+
+  const date = new Date(timestamp)
+
+  if (diffMin < 2) return 'just now'
+  if (diffMin < 60) return `${diffMin} minutes ago`
+  if (diffHour < 24) return diffHour === 1 ? 'an hour ago' : `${diffHour} hours ago`
+  if (diffDay === 1) return 'yesterday'
+  if (diffWeek < 1) return 'last week'
+  
+  const optionsThisYear = { month: 'short', day: 'numeric' }
+  const optionsOtherYear = { month: 'short', day: 'numeric', year: 'numeric' }
+
+  if (date.getFullYear() === new Date().getFullYear()) {
+    // Jul 27
+    return date.toLocaleDateString(undefined, optionsThisYear)
+  } else {
+    // Jul 28, 2024
+    return date.toLocaleDateString(undefined, optionsOtherYear)
+  }
 }

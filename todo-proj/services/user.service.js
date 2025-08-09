@@ -8,6 +8,7 @@ export const userService = {
     signup,
     getById,
     query,
+    save,
     getEmptyCredentials
 }
 const STORAGE_KEY_LOGGEDIN = 'user'
@@ -19,6 +20,15 @@ function query() {
 
 function getById(userId) {
     return storageService.get(STORAGE_KEY, userId)
+}
+
+function save(user) {
+    if (user._id) {
+        return storageService.put(STORAGE_KEY, user)
+    } else {
+        user.createdAt = user.updatedAt = Date.now()
+        return storageService.post(STORAGE_KEY, user)
+    }
 }
 
 function login({ username, password }) {
@@ -33,6 +43,13 @@ function login({ username, password }) {
 function signup({ username, password, fullname }) {
     const user = { username, password, fullname }
     user.createdAt = user.updatedAt = Date.now()
+    user.balance = 10000
+    user.activities = [
+        {
+            txt: 'Added a Todo',
+            at: 1523873242735
+        }
+    ]
 
     return storageService.post(STORAGE_KEY, user)
         .then(_setLoggedinUser)
@@ -48,7 +65,13 @@ function getLoggedinUser() {
 }
 
 function _setLoggedinUser(user) {
-    const userToSave = { _id: user._id, fullname: user.fullname }
+    const userToSave = { 
+        _id: user._id, 
+        fullname: user.fullname, 
+        balance: user.balance, 
+        activities: user.activities, 
+        prefs: user.prefs,
+    }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN, JSON.stringify(userToSave))
     return userToSave
 }
@@ -58,6 +81,13 @@ function getEmptyCredentials() {
         fullname: '',
         username: 'muki',
         password: 'muki1',
+        balance: 10000,
+        activities: [
+            {
+                txt: 'Added a Todo',
+                at: 1523873242735
+            }
+        ]
     }
 }
 

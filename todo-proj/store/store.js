@@ -1,6 +1,6 @@
 const { createStore } = Redux
 
-// export const INCREMENT_BY = 'INCREMENT_BY'
+export const INCREMENT_BY = 'INCREMENT_BY'
 
 export const SET_TODOS = 'SET_TODOS'
 export const REMOVE_TODO = 'REMOVE_TODO'
@@ -50,7 +50,7 @@ export function appReducer(state = initialState, cmd = {}) {
 			return { ...state, loggedinUser: cmd.loggedinUser }
 
 		case SET_USER_SCORE:
-			const loggedinUser = { ...state.loggedinUser, score: cmd.score }
+			var loggedinUser = { ...state.loggedinUser, score: cmd.score }
 			return { ...state, loggedinUser }
 
 		case SET_FILTERBY:
@@ -59,6 +59,11 @@ export function appReducer(state = initialState, cmd = {}) {
 
 		case SET_LOADING:
 			return { ...state, isLoading: cmd.isLoading }
+
+		case INCREMENT_BY:
+			var loggedinUser = { ...state.loggedinUser, balance: state.loggedinUser.balance + 10 }
+			return { ...state, loggedinUser }
+
 
 		// case TOGGLE_CART:
 		// 	return { ...state, showCart: !state.showCart }

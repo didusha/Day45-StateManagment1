@@ -1,6 +1,7 @@
 import { utilService } from './util.service.js'
 import { storageService } from './async-storage.service.js'
 
+const PAGE_SIZE = 8
 const TODO_KEY = 'todoDB'
 _createTodos()
 
@@ -14,10 +15,11 @@ export const todoService = {
     getFilterFromSearchParams,
     getImportanceStats,
 }
-// For Debug (easy access from console):
+// For Detodo (easy access from console):
 window.cs = todoService
 
 function query(filterBy = {}) {
+
     return storageService.query(TODO_KEY)
         .then(todos => {
             if (filterBy.txt) {
@@ -29,7 +31,35 @@ function query(filterBy = {}) {
                 todos = todos.filter(todo => todo.importance >= filterBy.importance)
             }
 
-            return todos
+            if (filterBy.isDone === "active") {
+                todos = todos.filter(todo => !todo.isDone)
+            }
+
+            if (filterBy.isDone === "done") {
+                todos = todos.filter(todo => todo.isDone)
+            }
+
+            if (filterBy.sortField) {
+                const dir = (filterBy.sortDir === true) ? -1 : 1
+
+                if (filterBy.sortField === 'createdAt') {
+                    todos.sort((b1, b2) => (b1.createdAt - b2.createdAt) * dir)
+                } else if (filterBy.sortField === 'importance') {
+                    todos.sort((b1, b2) => (b1.importance - b2.importance) * dir)
+                } else if (filterBy.sortField === 'title') {
+                    todos.sort((b1, b2) => b1.txt.localeCompare(b2.txt) * dir)
+                }
+            }
+
+            const maxPage = Math.ceil(todos.length / PAGE_SIZE)
+
+            if (filterBy.pageIdx !== null) {
+                const startIdx = filterBy.pageIdx * PAGE_SIZE
+                todos = todos.slice(startIdx, startIdx + PAGE_SIZE)
+            }
+
+            return Promise.resolve({ todos, maxPage })
+            // return todos
         })
 }
 
@@ -61,14 +91,14 @@ function getEmptyTodo(txt = '', importance = 5) {
 }
 
 function getDefaultFilter() {
-    return { txt: '', importance: 0 }
+    return { txt: '', importance: 0, sortField: '', sortDir: false, pageIdx: 0 }
 }
 
 function getFilterFromSearchParams(searchParams) {
     const defaultFilter = getDefaultFilter()
     const filterBy = {}
     for (const field in defaultFilter) {
-        filterBy[field] = searchParams.get(field) || ''
+        filterBy[field] = searchParams.get(field) || defaultFilter[field]
     }
     return filterBy
 }

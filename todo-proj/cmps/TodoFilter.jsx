@@ -1,12 +1,17 @@
-const { useState, useEffect } = React
+import { utilService } from "../services/util.service.js";
+
+const { useState, useEffect, useRef } = React
 
 export function TodoFilter({ onSetFilterBy, defaultFilter }) {
 
     const [filterByToEdit, setFilterByToEdit] = useState(defaultFilter)
+    // console.log("🚀 ~ TodoFilter ~ filterByToEdit:", filterByToEdit)
+    const debouncedOnSetFilterByTxt = useRef(utilService.debounce(onSetFilterBy, 300)).current;
 
     useEffect(() => {
         // Notify parent
-        onSetFilterBy(filterByToEdit)
+        if( filterByToEdit.txt !== undefined) debouncedOnSetFilterByTxt(filterByToEdit)
+        else onSetFilterBy(filterByToEdit)
     }, [filterByToEdit])
 
     function handleChange({ target }) {
@@ -35,7 +40,7 @@ export function TodoFilter({ onSetFilterBy, defaultFilter }) {
         // onSetFilterBy(filterByToEdit)
     }
 
-    const { txt, importance } = filterByToEdit
+    const { txt, importance, isDone, sortField, sortDir } = filterByToEdit
     return (
         <section className="todo-filter">
             <h2>Filter Todos</h2>
@@ -47,6 +52,26 @@ export function TodoFilter({ onSetFilterBy, defaultFilter }) {
                 <input value={importance} onChange={handleChange}
                     type="number" placeholder="By Importance" id="importance" name="importance"
                 />
+
+                <label htmlFor="isDone">Filter By: </label>
+                <select value={isDone} onChange={handleChange} name="isDone" id="isDone">
+                    <option value="">All</option>
+                    <option value="active">Active</option>
+                    <option value="done">Done</option>
+                </select>
+
+                <label htmlFor="sortField">Sort by:</label>
+                <select id="sortField" name="sortField" value={sortField} selected={sortField} onChange={handleChange}>
+                    <option value="">Select sort</option>
+                    <option value="title">Title</option>
+                    <option value="importance">Importance</option>
+                    <option value="createdAt">Created At</option>
+                </select>
+
+                <label><span>⬇</span>
+                    <input type="checkbox" name="sortDir" checked={sortDir} onChange={handleChange} />
+                </label>
+
 
                 <button hidden>Set Filter</button>
             </form>
