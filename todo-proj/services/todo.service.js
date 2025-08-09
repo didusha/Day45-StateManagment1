@@ -107,7 +107,7 @@ function getFilterFromSearchParams(searchParams) {
             // Convert value type based on the default filter's type
             const defaultVal = defaultFilter[field]
             if (typeof defaultVal === 'boolean') {
-                filterBy[field] = false  
+                filterBy[field] = val === 'true'  
             } else if (typeof defaultVal === 'number') {
                 filterBy[field] = +val 
             } else {
