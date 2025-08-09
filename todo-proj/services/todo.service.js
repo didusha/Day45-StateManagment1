@@ -98,7 +98,22 @@ function getFilterFromSearchParams(searchParams) {
     const defaultFilter = getDefaultFilter()
     const filterBy = {}
     for (const field in defaultFilter) {
-        filterBy[field] = searchParams.get(field) || defaultFilter[field]
+        let val = searchParams.get(field)
+
+        if (val === null) {
+            // No param, use default value
+            filterBy[field] = defaultFilter[field]
+        } else {
+            // Convert value type based on the default filter's type
+            const defaultVal = defaultFilter[field]
+            if (typeof defaultVal === 'boolean') {
+                filterBy[field] = false  
+            } else if (typeof defaultVal === 'number') {
+                filterBy[field] = +val 
+            } else {
+                filterBy[field] = val 
+            }
+        }
     }
     return filterBy
 }
