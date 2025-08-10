@@ -1,90 +1,18 @@
-const { createStore } = Redux
+import { todoReducer } from "./reducers/todo.reducer.js"
+import { userReducer } from "./reducers/user.reducer.js"
 
-export const INCREMENT_BY = 'INCREMENT_BY'
+const { createStore, combineReducers, compose } = Redux
 
-export const SET_TODOS = 'SET_TODOS'
-export const REMOVE_TODO = 'REMOVE_TODO'
-export const ADD_TODO = 'ADD_TODO'
-export const UPDATE_TODO = 'UPDATE_TODO'
+const rootReducer = combineReducers({
+    todoModule: todoReducer,
+    userModule: userReducer
+})
 
-export const SET_USER = 'SET_USER'
-export const SET_USER_SCORE = 'SET_USER_SCORE'
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+export const store = createStore(rootReducer, composeEnhancers())
 
-export const SET_FILTERBY = 'SET_FILTERBY'
-export const SET_LOADING = 'SET_LOADING'
-// export const TOGGLE_CART = 'TOGGLE_CART'
-// export const ADD_TO_CART = 'ADD_TO_CART'
-// export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
-// export const CLEAR_CART = 'CLEAR_CART'
-
-const initialState = {
-	todos: [],
-	loggedinUser: null,
-	filterBy: {
-		txt: '',
-		importance: 0,
-	},
-	isLoading: false,
-	// showCart: false,
-	// cart: [],
-}
-
-export function appReducer(state = initialState, cmd = {}) {
-	switch (cmd.type) {
-
-		case SET_TODOS:
-			return { ...state, todos: cmd.todos }
-
-		case REMOVE_TODO:
-			var todos = state.todos.filter(todo => todo._id !== cmd.todoId)
-			return { ...state, todos }
-
-		case ADD_TODO:
-			return { ...state, todos: [...state.todos, cmd.todo] }
-
-		case UPDATE_TODO:
-			var todos = state.todos.map(todo => (todo._id === cmd.todo._id ? cmd.todo : todo))
-			return { ...state, todos }
-
-		case SET_USER:
-			return { ...state, loggedinUser: cmd.loggedinUser }
-
-		case SET_USER_SCORE:
-			var loggedinUser = { ...state.loggedinUser, score: cmd.score }
-			return { ...state, loggedinUser }
-
-		case SET_FILTERBY:
-			const filterBy = { ...state.filterBy, ...cmd.filterBy }
-			return { ...state, filterBy }
-
-		case SET_LOADING:
-			return { ...state, isLoading: cmd.isLoading }
-
-		case INCREMENT_BY:
-			var loggedinUser = { ...state.loggedinUser, balance: state.loggedinUser.balance + 10 }
-			return { ...state, loggedinUser }
-
-
-		// case TOGGLE_CART:
-		// 	return { ...state, showCart: !state.showCart }
-
-		// case ADD_TO_CART:
-		// 	return { ...state, cart: [...state.cart, cmd.car] }
-
-		// case REMOVE_FROM_CART:
-		// 	var cart = state.cart.filter(car => car._id !== cmd.carId)
-		// 	return { ...state, cart }
-
-		// case CLEAR_CART:
-		// 	return { ...state, cart: [] }
-
-		default:
-			return initialState
-	}
-}
-
-export const store = createStore(appReducer)
-// window.gStore = store
+// export const store = createStore(appReducer)
+window.gStore = store
 
 // store.subscribe(() => {
 // 	console.log('Current state is:', store.getState())

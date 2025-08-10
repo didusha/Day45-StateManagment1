@@ -1,6 +1,6 @@
-import { ADD_TODO, REMOVE_TODO, SET_LOADING, SET_TODOS, store, UPDATE_TODO } from '../store.js'
-
+import { ADD_TODO, REMOVE_TODO, SET_LOADING, SET_TODOS, UPDATE_TODO } from '../reducers/todo.reducer.js'
 import { todoService } from '../../services/todo.service.js'
+import { store } from '../store.js'
 
 export function loadTodos(filterBy = {}) {
         store.dispatch({ type: SET_LOADING, isLoading: true })

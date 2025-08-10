@@ -1,6 +1,5 @@
 import { storageService } from "./async-storage.service.js"
 
-
 export const userService = {
     getLoggedinUser,
     login,
@@ -9,7 +8,7 @@ export const userService = {
     getById,
     query,
     save,
-    getEmptyCredentials
+    getEmptyCredentials,
 }
 const STORAGE_KEY_LOGGEDIN = 'user'
 const STORAGE_KEY = 'userDB'
@@ -44,12 +43,7 @@ function signup({ username, password, fullname }) {
     const user = { username, password, fullname }
     user.createdAt = user.updatedAt = Date.now()
     user.balance = 10000
-    user.activities = [
-        {
-            txt: 'Added a Todo',
-            at: 1523873242735
-        }
-    ]
+    user.activities = []
 
     return storageService.post(STORAGE_KEY, user)
         .then(_setLoggedinUser)
@@ -80,14 +74,9 @@ function getEmptyCredentials() {
     return {
         fullname: '',
         username: 'muki',
-        password: 'muki1',
+        password: 'muki',
         balance: 10000,
-        activities: [
-            {
-                txt: 'Added a Todo',
-                at: 1523873242735
-            }
-        ]
+        activities: []
     }
 }
 

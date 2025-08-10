@@ -1,20 +1,19 @@
 const { useState } = React
 const { Link, NavLink } = ReactRouterDOM
 const { useNavigate } = ReactRouter
+const { useSelector } = ReactRedux
 
-import { userService } from '../services/user.service.js'
 import { UserMsg } from "./UserMsg.jsx"
 import { LoginSignup } from './LoginSignup.jsx'
 import { showErrorMsg } from '../services/event-bus.service.js'
 import { logout } from '../store/actions/user.actions.js'
-const { useSelector } = ReactRedux
 
 
 export function AppHeader() {
     const navigate = useNavigate()
 
-    const loggedinUser = useSelector(state => state.loggedinUser)
-    const todos = useSelector(state => state.todos) || []
+    const loggedinUser = useSelector(storeState => storeState.userModule.loggedinUser)
+    const todos = useSelector(storeState => storeState.todoModule.todos) || []
 
     function onLogout() {
         logout()
@@ -22,7 +21,6 @@ export function AppHeader() {
             .catch(err => showErrorMsg('OOPs try again'))
     }
 
-    
     const doneTodos = todos.filter(todo => todo.isDone === true)
     const progress = todos.length > 0 ? (doneTodos.length / todos.length) * 100 : 0
 

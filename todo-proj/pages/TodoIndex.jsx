@@ -4,7 +4,9 @@ import { DataTable } from "../cmps/data-table/DataTable.jsx"
 import { todoService } from "../services/todo.service.js"
 import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service.js"
 import { loadTodos, removeTodo, saveTodo } from "../store/actions/todo.actions.js"
-import { INCREMENT_BY, SET_FILTERBY } from "../store/store.js"
+import { SET_FILTERBY } from "../store/reducers/todo.reducer.js"
+import { INCREMENT_BY } from "../store/reducers/user.reducer.js"
+import { updateUserActivity } from "../store/actions/user.actions.js"
 
 const { useState, useEffect } = React
 const { Link, useSearchParams } = ReactRouterDOM
@@ -12,10 +14,10 @@ const { useSelector, useDispatch } = ReactRedux
 
 export function TodoIndex() {
 
-    const dispatch = useDispatch()
-    const todos = useSelector(state => state.todos)
-    const filterBy = useSelector(state => state.filterBy)
-    const isLoading = useSelector(state => state.isLoading)
+    const dispatch = useDispatch() 
+    const todos = useSelector(storeState => storeState.todoModule.todos)
+    const filterBy = useSelector(storeState => storeState.todoModule.filterBy)
+    const isLoading = useSelector(storeState => storeState.todoModule.isLoading)
     const [maxPage, setMaxPage] = useState(null)
 
     // Special hook for accessing search-params:
@@ -29,10 +31,11 @@ export function TodoIndex() {
     }, [filterBy])
 
 
-    function onRemoveTodo(todoId) {
+    function onRemoveTodo(todoId, todoTitle) {
         if (!confirm('Sure to delete?')) return
         removeTodo(todoId)
             .then(() => showSuccessMsg(`Todo removed`))
+            .then(() => updateUserActivity('Removed the Todo:',todoTitle))
             .catch(err => {
                 console.log('err:', err)
                 showErrorMsg('Cannot remove todo ' + todoId)
@@ -41,6 +44,7 @@ export function TodoIndex() {
 
     function onToggleTodo(todo) {
         const todoToSave = { ...todo, isDone: !todo.isDone }
+        
         saveTodo(todoToSave)
             .then(savedTodo => {
                 showSuccessMsg(`Todo is ${(savedTodo.todo.isDone) ? 'done' : 'back on your list'}`)

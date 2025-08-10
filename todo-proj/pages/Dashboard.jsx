@@ -6,7 +6,7 @@ const { useSelector, useDispatch } = ReactRedux
 
 export function Dashboard() {
 
-    const todos = useSelector(state => state.todos)
+    const todos = useSelector(storeState => storeState.todoModule.todos)
     const [importanceStats, setImportanceStats] = useState([])
 
     useEffect(() => {
